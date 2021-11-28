@@ -6,6 +6,7 @@ import com.prabina.promo.promotionengine.dtos.CreateCartResponse;
 import com.prabina.promo.promotionengine.dtos.GetCartByReference;
 import com.prabina.promo.promotionengine.exceptions.CartNotFoundException;
 import com.prabina.promo.promotionengine.services.CartService;
+import com.prabina.promo.promotionengine.services.CheckoutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,9 @@ public class CartController {
 
     @Autowired
     CartService cartService;
+
+    @Autowired
+    CheckoutService checkoutService;
 
     @GetMapping("/carts/{reference}")
     public ResponseEntity<GetCartByReference> getCartByReference(@PathVariable String reference) throws CartNotFoundException {
@@ -32,6 +36,12 @@ public class CartController {
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+    @PostMapping("/carts/{reference}/checkout")
+    public ResponseEntity<CheckoutResponse> checkoutCart(@PathVariable String reference) throws ClassNotFoundException {
 
+        CheckoutResponse response = checkoutService.checkout(reference);
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
 }

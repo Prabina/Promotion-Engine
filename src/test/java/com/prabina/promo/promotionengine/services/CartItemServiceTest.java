@@ -33,9 +33,6 @@ public class CartItemServiceTest {
     CartRepository cartRepository;
 
     @Mock
-    CartItemRepository cartItemRepository;
-
-    @Mock
     ProductRepository productRepository;
 
     private static Product product1;
