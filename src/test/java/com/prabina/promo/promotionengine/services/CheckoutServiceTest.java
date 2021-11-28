@@ -31,13 +31,10 @@ public class CheckoutServiceTest {
     private static CartRepository cartRepository;
 
     private static Promotion promotion;
-    private static Promotion alreadyAppliedPromotion;
     private static Product product1;
     private static Product product2;
-    private static Product product3;
-    private static Set<Product> productSet1;
-    private static Set<Product> productSet2;
-    private static Cart cart = new Cart();
+    private static Set<Product> productSet;
+    private static Cart cart;
 
     @BeforeAll
     private static void setup(){
@@ -46,69 +43,64 @@ public class CheckoutServiceTest {
         checkoutService = new CheckoutService(promoStrategyMap);
         checkoutService.cartRepository = cartRepository;
 
+        promotion = createPromotion(PromotionType.DIFFERENT_ITEMS_FIXED_PRICE, "C + D = 30",
+                BigDecimal.valueOf(30), "PROMO1", 0);
+
+        product1 = createProduct("product1", BigDecimal.valueOf(20),"C", promotion);
+        product2 = createProduct("product2", BigDecimal.valueOf(15),"D", promotion);
+
+        productSet = new HashSet<>();
+        productSet.add(product1);
+        productSet.add(product2);
+
+        CheckoutServiceTest.promotion.setProducts(productSet);
+
+        CartItem item1 = createCartItem(1, product1);
+        CartItem item2 = createCartItem(1, product2);
+
+        cart = createCart(item1, item2);
+
+    }
+
+    private static Cart createCart(CartItem item1, CartItem item2) {
+        Cart cart = new Cart();
         cart.setReference("testRef");
         cart.setUsername("test user");
         cart.setCartItems(new HashSet<>());
-
-        promotion = new Promotion();
-        promotion.setPromoType(PromotionType.DIFFERENT_ITEMS_FIXED_PRICE);
-        promotion.setDiscount(BigDecimal.valueOf(5));
-        promotion.setPromoCode("PROMO1");
-
-        alreadyAppliedPromotion = new Promotion();
-        alreadyAppliedPromotion.setPromoType(PromotionType.SAME_ITEM_FIXED_PRICE);
-        alreadyAppliedPromotion.setDiscount(BigDecimal.valueOf(5));
-        alreadyAppliedPromotion.setPromoCode("PROMO2");
-
-        product1 = new Product();
-        product1.setName("product1");
-        product1.setPrice(new BigDecimal(10));
-        product1.setSku("SKU1");
-        product1.setPromotion(promotion);
-
-        product2 = new Product();
-        product2.setName("product2");
-        product2.setPrice(new BigDecimal(10));
-        product2.setSku("SKU2");
-        product2.setPromotion(promotion);
-
-        product3 = new Product();
-        product3.setName("product3");
-        product3.setPrice(new BigDecimal(5));
-        product3.setSku("SKU3");
-        product3.setPromotion(alreadyAppliedPromotion);
-
-        productSet1 = new HashSet<>();
-        productSet1.add(product1);
-        productSet1.add(product2);
-
-        productSet2 = new HashSet<>();
-        productSet2.add(product3);
-
-        promotion.setProducts(productSet1);
-        alreadyAppliedPromotion.setProducts(productSet2);
-
-        CartItem item1 = new CartItem();
-        item1.setCart(cart);
-        item1.setQuantity(1);
-        item1.setProduct(product1);
-
-        CartItem item2 = new CartItem();
-        item2.setCart(cart);
-        item2.setQuantity(2);
-        item2.setProduct(product2);
-
-        CartItem item3 = new CartItem();
-        item3.setCart(cart);
-        item3.setQuantity(2);
-        item3.setProduct(product3);
-        item3.setPromoApplied(true);
-
         Set<CartItem> itemSet = new HashSet<>();
         itemSet.add(item1);
         itemSet.add(item2);
         cart.setCartItems(itemSet);
 
+        return cart;
+    }
+
+    private static CartItem createCartItem(int qty, Product product) {
+        CartItem item = new CartItem();
+        item.setCart(cart);
+        item.setQuantity(qty);
+        item.setProduct(product);
+        return item;
+    }
+
+    private static Product createProduct(String name, BigDecimal price, String sku, Promotion promotion) {
+        Product product = new Product();
+        product.setName(name);
+        product.setPrice(price);
+        product.setSku(sku);
+        product.setPromotion(promotion);
+
+        return product;
+    }
+
+    private static Promotion createPromotion(PromotionType promotionType, String name, BigDecimal discount, String promoCode, Integer noOfItems) {
+        Promotion promotion = new Promotion();
+        promotion.setPromoType(promotionType);
+        promotion.setName(name);
+        promotion.setDiscount(discount);
+        promotion.setPromoCode(promoCode);
+        promotion.setNoOfItems(noOfItems);
+        return promotion;
     }
 
     @Test
@@ -118,8 +110,8 @@ public class CheckoutServiceTest {
         CheckoutResponse response = checkoutService.checkout("testRef");
 
         assertNotNull(response);
-        assertEquals(new BigDecimal(30), response.getTotalAmount());
-        assertEquals(new BigDecimal(15), response.getTotalDiscount());
-        assertEquals(new BigDecimal(15), response.getAmountDue());
+        assertEquals(new BigDecimal(35), response.getTotalAmount());
+        assertEquals(new BigDecimal(5), response.getTotalDiscount());
+        assertEquals(new BigDecimal(30), response.getAmountDue());
     }
 }
