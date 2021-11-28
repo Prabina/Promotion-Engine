@@ -4,3 +4,4 @@ INSERT INTO PROMOTION (id, name, promo_code, promo_type, discount, no_of_items) 
 INSERT INTO PRODUCT (sku, name, price, promotion_id) VALUES ('E', 'maggie', 60, 1000);
 INSERT INTO PRODUCT (sku, name, price, promotion_id) VALUES ('F', 'Lays', 40, 1001);
 INSERT INTO PRODUCT (sku, name, price, promotion_id) VALUES ('G', 'Coke', 40, 1001);
+INSERT INTO PRODUCT (sku, name, price) VALUES ('H', 'Coke', 40);
