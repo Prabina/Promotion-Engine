@@ -3,12 +3,14 @@ package com.prabina.promo.promotionengine.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
 @Getter @Setter @NoArgsConstructor
+@ToString
 public class Cart {
 
     @Id
