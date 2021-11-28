@@ -12,12 +12,15 @@ import java.util.Set;
 @Getter @Setter @NoArgsConstructor
 public class Promotion {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Column(name = "promo_code")
     private String promoCode;
+    @Column(name = "promo_type")
     private String promoType;
     private Integer discount;
+    @Column(name = "no_of_items")
     private Integer noOfItems;
 
     @OneToMany(mappedBy = "promotion", fetch = FetchType.EAGER)

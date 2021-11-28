@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor @Getter @Setter
 public class Product {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String sku;
     private String name;
