@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class FixedPriceForNItems implements PromoStrategy{
     @Override
     public BigDecimal applyPromo(CartItem cartItem) {
-        BigDecimal discount = BigDecimal.ZERO;
+        BigDecimal promoDiscount = BigDecimal.ZERO;
 
         if (!cartItem.isPromoApplied()) {
             Promotion promotion = cartItem.getProduct().getPromotion();
@@ -26,12 +26,11 @@ public class FixedPriceForNItems implements PromoStrategy{
 
                 int discountedAmount = cartItem.getQuantity() / promotion.getNoOfItems() * promotion.getDiscount().intValue();
 
-                discount = beforeDiscount.subtract(new BigDecimal(discountedAmount));
+                promoDiscount = beforeDiscount.subtract(new BigDecimal(discountedAmount));
 
                 cartItem.setPromoApplied(true);
             }
         }
-
-        return discount;
+        return promoDiscount;
     }
 }
