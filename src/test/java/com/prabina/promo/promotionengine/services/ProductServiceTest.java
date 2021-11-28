@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.prabina.promo.promotionengine.dtos.GetProduct;
 import com.prabina.promo.promotionengine.entities.Product;
 import com.prabina.promo.promotionengine.entities.Promotion;
+import com.prabina.promo.promotionengine.exceptions.ExceptionMessages;
+import com.prabina.promo.promotionengine.exceptions.ProductNotFoundException;
 import com.prabina.promo.promotionengine.promoEngine.PromotionType;
 import com.prabina.promo.promotionengine.repositories.ProductRepository;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,10 +16,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.mockito.Mockito.doReturn;
 
@@ -92,6 +91,32 @@ public class ProductServiceTest {
         List<GetProduct> response = productService.getAllProducts();
 
         assertEquals(3, response.size());
+    }
+
+    @Test
+    public void shouldReturnAProductIfSkuExist() throws Exception {
+        Optional<Product> productOptional = Optional.of(product1);
+        doReturn(productOptional).when(productRepository).findBySku("SKU1");
+
+        GetProduct response = productService.getProductBySku("SKU1");
+
+        assertEquals("SKU1",response.getSku());
+        assertEquals("product1",response.getName());
+        assertEquals(BigDecimal.valueOf(10), response.getPrice());
+    }
+
+    @Test
+    public void shouldThrowExceptionIfSkuDoesNotExist() throws Exception {
+        doReturn(Optional.empty()).when(productRepository).findBySku("invalid_SKU");
+
+        ProductNotFoundException exception = assertThrows(ProductNotFoundException.class, () -> {
+            productService.getProductBySku("invalid_SKU");
+        });
+
+        String expectedMessage = ExceptionMessages.PRODUCT_NOT_FOUND;
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
     }
 
 }
