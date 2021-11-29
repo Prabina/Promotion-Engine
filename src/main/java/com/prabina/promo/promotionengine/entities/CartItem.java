@@ -3,14 +3,12 @@ package com.prabina.promo.promotionengine.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Getter @Setter @NoArgsConstructor
-@ToString
 public class CartItem {
 
     @Id
@@ -44,5 +42,15 @@ public class CartItem {
 
     public void incrementQuantity(Integer quantity) {
         this.quantity += quantity;
+    }
+
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                "id=" + id +
+                ", product=" + product +
+                ", quantity=" + quantity +
+                ", isPromoApplied=" + isPromoApplied +
+                '}';
     }
 }

@@ -5,7 +5,6 @@ import com.prabina.promo.promotionengine.promoEngine.PromotionType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -13,7 +12,6 @@ import java.util.Set;
 
 @Entity
 @Getter @Setter @NoArgsConstructor
-@ToString
 public class Promotion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,4 +32,16 @@ public class Promotion {
 
     @OneToMany(mappedBy = "promotion", fetch = FetchType.EAGER)
     private Set<Product> products;
+
+    @Override
+    public String toString() {
+        return "Promotion{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", promoCode='" + promoCode + '\'' +
+                ", promoType=" + promoType +
+                ", discount=" + discount +
+                ", noOfItems=" + noOfItems +
+                '}';
+    }
 }
